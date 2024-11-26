@@ -56,6 +56,17 @@ def gameover(screen: pg.Surface):
     return black_out_rct
 
 
+def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
+    """サイズの異なる爆弾Surfaceを要素としたリストと加速度リストを返す"""
+    bb_imgs = []
+    bb_accs = [a for a in range(1, 11)]  # 加速度リスト
+    for r in range(1, 11):
+        bb_img = pg.Surface((20*r, 20*r), pg.SRCALPHA)
+        pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
+        bb_img.set_colorkey((0, 0, 0))
+        bb_imgs.append(bb_img)
+    return bb_imgs, bb_accs
+
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -65,9 +76,8 @@ def main():
     kk_rct = kk_img.get_rect()
     kk_rct.center = 300, 200
 
-    bb_img = pg.Surface((20, 20)) # 爆弾用Surface
-    pg.draw.circle(bb_img, (255, 0, 0), (10, 10), 10) # 爆弾を描画
-    bb_img.set_colorkey((0, 0, 0))
+    bb_imgs, bb_accs = init_bb_imgs()  # 拡大爆弾と加速リストを初期化
+    bb_img = bb_imgs[0]
     bb_rct = bb_img.get_rect() #爆弾Rect
     bb_rct.center = random.randint(0, WIDTH), random.randint(0, HEIGHT) # bb_rctの位置を表す変数に乱数を設定する
     vx, vy = +5, +5
@@ -95,6 +105,13 @@ def main():
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         screen.blit(kk_img, kk_rct)
         bb_rct.move_ip(vx, vy)  # 爆弾動く
+        idx = min(tmr // 500, 9)  # 0～9の範囲でインデックスを選択
+        bb_img = bb_imgs[idx]
+        bb_rct = bb_img.get_rect(center=bb_rct.center)
+        avx = vx * bb_accs[idx]
+        avy = vy * bb_accs[idx]
+        
+        bb_rct.move_ip(avx, avy)  # 拡大・加速された速度で爆弾が動く
         yoko, tate = check_bound(bb_rct)
         if not yoko:  # 横にはみ出てる
             vx *= -1
