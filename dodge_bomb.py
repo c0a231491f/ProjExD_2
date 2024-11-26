@@ -36,7 +36,7 @@ def gameover(screen: pg.Surface):
     戻り値:ゲームオーバー画面のブラックアウトSurfaceの位置情報
     """
     black_out = pg.Surface((WIDTH, HEIGHT)) # ブラックアウト用Surface
-    pg.draw.rect(black_out, (0,0,0), pg.Rect(0, 0, 1100, 650))
+    pg.draw.rect(black_out, (0,0,0), (0, 0, 1100, 650))
     black_out_rct = black_out.get_rect()
     black_out_rct.center = WIDTH/2, HEIGHT/2
     black_out.set_alpha(128)
