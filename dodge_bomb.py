@@ -14,6 +14,20 @@ DELTA = {
 }
 
 
+def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
+    """
+    引数で与えられたRectが画面の中か外かを判定する
+    引数:こうかとんRect or ばくだんRect
+    戻り値:真理値タプル（横, 縦) / 画面内ならTrue, 画面外ならFalse
+    """
+    yoko , tate = True, True
+    if rct.left < 0 or WIDTH < rct.right:
+        yoko = False
+    if rct.top < 0 or HEIGHT < rct.bottom:
+        tate = False
+    return yoko, tate
+
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -41,10 +55,16 @@ def main():
             if key_lst[key]:
                 sum_mv[0] += taple[0]
                 sum_mv[1] += taple[1]
-    
         kk_rct.move_ip(sum_mv)
-        bb_rct.move_ip(vx, vy)
+        if check_bound(kk_rct) != (True, True):
+            kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         screen.blit(kk_img, kk_rct)
+        bb_rct.move_ip(vx, vy)  # 爆弾動く
+        yoko, tate = check_bound(bb_rct)
+        if not yoko:  # 横にはみ出てる
+            vx *= -1
+        if not tate:  # 縦にはみ出てる
+            vy *= -1
         screen.blit(bb_img, bb_rct)
         pg.display.update()
         tmr += 1
