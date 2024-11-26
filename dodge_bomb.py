@@ -1,5 +1,6 @@
 import os
 import random
+import time
 import sys
 import pygame as pg
 
@@ -28,6 +29,34 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
     return yoko, tate
 
 
+def gameover(screen: pg.Surface):
+    black_out = pg.Surface((WIDTH, HEIGHT)) # ブラックアウト用Surface
+    pg.draw.rect(black_out, (0,0,0), pg.Rect(0, 0, 1100, 650))
+    black_out_rct = black_out.get_rect()
+    black_out_rct.center = WIDTH/2, HEIGHT/2
+    black_out.set_alpha(128)
+    screen.blit(black_out, black_out_rct)
+
+    font = pg.font.Font(None, 80)
+    txt = font.render("Game Over", True, (255, 255, 255))
+    txt_rct = txt.get_rect()
+    txt_rct.center = WIDTH/2, HEIGHT/2
+    screen.blit(txt, txt_rct)
+    
+    kkcry_img = pg.image.load("fig/8.png")
+    kkcry_rct1 = kkcry_img.get_rect()
+    kkcry_rct2 = kkcry_img.get_rect()
+    kkcry_rct1.center = WIDTH/2-200, HEIGHT/2
+    kkcry_rct2.center = WIDTH/2+200, HEIGHT/2
+    screen.blit(kkcry_img, kkcry_rct1)
+    screen.blit(kkcry_img, kkcry_rct2)
+
+    pg.display.update()
+    time.sleep(5)
+    return black_out_rct
+
+
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -35,12 +64,14 @@ def main():
     kk_img = pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9)
     kk_rct = kk_img.get_rect()
     kk_rct.center = 300, 200
+
     bb_img = pg.Surface((20, 20)) # 爆弾用Surface
     pg.draw.circle(bb_img, (255, 0, 0), (10, 10), 10) # 爆弾を描画
     bb_img.set_colorkey((0, 0, 0))
     bb_rct = bb_img.get_rect() #爆弾Rect
     bb_rct.center = random.randint(0, WIDTH), random.randint(0, HEIGHT) # bb_rctの位置を表す変数に乱数を設定する
     vx, vy = +5, +5
+
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -48,8 +79,9 @@ def main():
             if event.type == pg.QUIT: 
                 return
         if kk_rct.colliderect(bb_rct):
-            print("ゲームオーバー")
-            return  # ゲームオーバー
+            gameover(screen)
+            return
+        
         screen.blit(bg_img, [0, 0]) 
 
         key_lst = pg.key.get_pressed()
