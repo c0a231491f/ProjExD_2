@@ -30,6 +30,11 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
 
 
 def gameover(screen: pg.Surface):
+    """
+    ゲームオーバー画面を表示する関数
+    引数:ゲーム画面のSurfaceのオブジェクト
+    戻り値:ゲームオーバー画面のブラックアウトSurfaceの位置情報
+    """
     black_out = pg.Surface((WIDTH, HEIGHT)) # ブラックアウト用Surface
     pg.draw.rect(black_out, (0,0,0), pg.Rect(0, 0, 1100, 650))
     black_out_rct = black_out.get_rect()
@@ -57,7 +62,6 @@ def gameover(screen: pg.Surface):
 
 
 def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
-    """サイズの異なる爆弾Surfaceを要素としたリストと加速度リストを返す"""
     bb_imgs = []
     bb_accs = [a for a in range(1, 11)]  # 加速度リスト
     for r in range(1, 11):
@@ -105,13 +109,14 @@ def main():
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         screen.blit(kk_img, kk_rct)
         bb_rct.move_ip(vx, vy)  # 爆弾動く
+
         idx = min(tmr // 500, 9)  # 0～9の範囲でインデックスを選択
         bb_img = bb_imgs[idx]
         bb_rct = bb_img.get_rect(center=bb_rct.center)
         avx = vx * bb_accs[idx]
         avy = vy * bb_accs[idx]
-        
         bb_rct.move_ip(avx, avy)  # 拡大・加速された速度で爆弾が動く
+
         yoko, tate = check_bound(bb_rct)
         if not yoko:  # 横にはみ出てる
             vx *= -1
