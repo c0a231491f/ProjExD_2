@@ -36,7 +36,7 @@ def gameover(screen: pg.Surface):
     戻り値:ゲームオーバー画面のブラックアウトSurfaceの位置情報
     """
     black_out = pg.Surface((WIDTH, HEIGHT)) # ブラックアウト用Surface
-    pg.draw.rect(black_out, (0,0,0), (0, 0, 1100, 650))
+    pg.draw.rect(black_out, (0,0,0), pg.Rect(0, 0, 1100, 650))
     black_out_rct = black_out.get_rect()
     black_out_rct.center = WIDTH/2, HEIGHT/2
     black_out.set_alpha(128)
@@ -48,13 +48,13 @@ def gameover(screen: pg.Surface):
     txt_rct.center = WIDTH/2, HEIGHT/2
     screen.blit(txt, txt_rct)
     
-    kkcry_img = pg.image.load("fig/8.png")
-    kkcry_rct1 = kkcry_img.get_rect()
-    kkcry_rct2 = kkcry_img.get_rect()
-    kkcry_rct1.center = WIDTH/2-200, HEIGHT/2
-    kkcry_rct2.center = WIDTH/2+200, HEIGHT/2
-    screen.blit(kkcry_img, kkcry_rct1)
-    screen.blit(kkcry_img, kkcry_rct2)
+    kk_cry_img = pg.image.load("fig/8.png")
+    kk_cry_rct1 = kk_cry_img.get_rect()
+    kk_cry_rct2 = kk_cry_img.get_rect()
+    kk_cry_rct1.center = WIDTH/2-200, HEIGHT/2
+    kk_cry_rct2.center = WIDTH/2+200, HEIGHT/2
+    screen.blit(kk_cry_img, kk_cry_rct1)
+    screen.blit(kk_cry_img, kk_cry_rct2)
 
     pg.display.update()
     time.sleep(5)
