@@ -106,10 +106,10 @@ def main():
 
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]
-        for key, taple in DELTA.items():
+        for key, tpl in DELTA.items():
             if key_lst[key]:
-                sum_mv[0] += taple[0]
-                sum_mv[1] += taple[1]
+                sum_mv[0] += tpl[0]
+                sum_mv[1] += tpl[1]
         kk_rct.move_ip(sum_mv)
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
